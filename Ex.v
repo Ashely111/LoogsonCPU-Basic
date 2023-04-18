@@ -7,7 +7,7 @@
 //
 ////////////////////////////////////////////////////////////
 `include "Defines.v"
-module EX (
+module Ex (
     input wire rst,
     // signal from id
 
@@ -15,7 +15,8 @@ module EX (
     input wire [`RegBus] reg2_i,
     input wire [`RegAddrBus] waddr_i,
     input wire reg_write_i,
-
+    input wire[`AluSelBus] alusel_i,
+    input wire[`AluOpBus] aluop_i,
 
     // result out
 
@@ -28,13 +29,14 @@ module EX (
 
 
 );
-    reg[RegBus] logicout ;
+reg[`RegBus] logicout ;
+
     always @(*) begin
         if (rst==`RstEnable) begin
             logicout <=`ZeroWord;
         end else begin
             case (aluop_i)
-                `EXE_OR_OP:begin
+                `EXE_OP_ORI:begin
                     logicout <=reg1_i | reg2_i;
                 end 
                 default: begin
@@ -43,7 +45,18 @@ module EX (
             endcase
         end
     end 
-
+    always @(*) begin
+        ex_waddr_o <=waddr_i;//写寄存器地址
+        ex_write_o <=reg_write_i;//写使能
+        case (alusel_i)
+            `EXE_RESULT_LOGIC:begin //将逻辑运算的值作为输出结果
+                ex_wdata_o <=logicout;
+            end 
+            default:begin
+                ex_wdata_o <=`ZeroWord;//
+            end 
+        endcase
+    end
 
 
 
