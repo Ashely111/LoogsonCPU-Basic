@@ -11,24 +11,24 @@
 module Mem2Wb (
     input wire rst,
     input wire clk,
-    input wire[`RegAddrBus] mem_waddr_o,
-    input wire[`RegBus] mem_wdata_o,
-    input wire mem_write_o,
+    input wire[`RegAddrBus] waddr_i,
+    input wire[`RegBus] wdata_i,
+    input wire we_i,
 
-    output reg[`RegAddrBus] wb_waddr,
-    output reg[`RegBus] wb_wdata,
-    output reg wb_write
+    output reg[`RegAddrBus] waddr_o,
+    output reg[`RegBus] wdata_o,
+    output reg we_o
 
 );
 always @(posedge clk) begin
     if (rst==`RstEnable) begin
-        wb_waddr <=`NOPRegAddr;
-        wb_wdata <=`ZeroWord;
-        wb_write <=`WriteDisable;
+        waddr_o <=`NOPRegAddr;
+        wdata_o <=`ZeroWord;
+        we_o <=`WriteDisable;
     end else begin
-        wb_waddr <=mem_waddr_o;
-        wb_wdata <=mem_wdata_o;
-        wb_write <=mem_write_o;
+        waddr_o <=waddr_i;
+        wdata_o <=wdata_i;
+        we_o <=we_i;
         end
 end  
 endmodule

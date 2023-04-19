@@ -11,8 +11,8 @@
 
 module Inst_rom (
     input wire ce,
-    input wire[`InstAddrBus] instaddr,
-    output reg[`InstBus] inst
+    input wire[`InstAddrBus] instaddr_i,
+    output reg[`InstBus] inst_o
 );
 
 // size InstMemNum, with InstBus
@@ -26,9 +26,9 @@ initial $readmem ("inst_rom.data",inst_mem);
 
 always @(*) begin
     if (ce==`ChipDisable) begin
-        inst <=`ZeroWord;
+        inst_o <=`ZeroWord;
     end else begin
-        inst <=inst_mem[instaddr[`InstMemNumLog2+1:2]];
+        inst_o <=inst_mem[instaddr_i[`InstMemNumLog2+1:2]];
     end
 end
 

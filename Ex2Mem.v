@@ -13,24 +13,24 @@ module Ex2Mem (
     input wire clk,
 
     //input from EXE 
-    input wire[`RegBus] ex_waddr,
-    input wire[`RegAddrBus] ex_wdata,
-    input wire ex_reg_w,
+    input wire[`RegBus] waddr_i,
+    input wire[`RegAddrBus] wdata_i,
+    input wire we_i,
     // output to MEM
-    output reg[`RegBus] mem_wdata,
-    output reg[`RegAddrBus] mem_waddr,
-    output reg mem_write
+    output reg[`RegBus] wdata_o,
+    output reg[`RegAddrBus] waddr_o,
+    output reg we_o
 );
 
 always @(posedge clk) begin
     if (rst==`RstEnable) begin
-        mem_waddr <=`ZeroWord;
-        mem_wdata <=`ZeroWord;
-        mem_write <=`WriteDisable;
+        waddr_o <=`ZeroWord;
+        wdata_o <=`ZeroWord;
+        we_o <=`WriteDisable;
     end else begin
-        mem_write <=ex_reg_w;
-        mem_waddr <=ex_waddr;
-        mem_wdata <=ex_wdata;
+        we_o <=we_i;
+        waddr_o <=waddr_i;
+        wdata_o <=wdata_i;
         
     end
 end

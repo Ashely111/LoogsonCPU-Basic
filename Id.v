@@ -14,22 +14,22 @@ module Id (
     input wire[`InstBus] inst_i,
 
     // input regfile values
-    input wire[`RegBus] reg1_data_i,
-    input wire[`RegBus] reg2_data_i,
+    input wire[`RegBus] reg1_i,
+    input wire[`RegBus] reg2_i,
     
 
     //output regfile values
-    output reg reg1_read_o,
-    output reg reg2_read_o,
-    output reg[`RegAddrBus] reg1_addr_o,
-    output reg[`RegAddrBus] reg2_addr_o,
+    output reg reg1_re_o,
+    output reg reg2_re_o,
+    output reg[`RegAddrBus] raddr1_o,
+    output reg[`RegAddrBus] raddr2_o,
+    //transent to  id2ex
     output reg[`AluSelBus] alusel_o,
     output reg[`AluOpBus]   aluop_o,
-    //transent to  id2ex
-    output reg[`RegBus] reg1_data_o,
-    output reg[`RegBus] reg2_data_o,
+    output reg[`RegBus] reg1_o,
+    output reg[`RegBus] reg2_o,
     output reg[`RegAddrBus] waddr_o,
-    output reg reg_write_o
+    output reg we_o
 
 );
 wire op_10 = inst_i[30];// 第一类指令 
@@ -48,24 +48,24 @@ reg instvalid;
 
 always @(*) begin
     if(rst==`RstEnable)begin
-        reg1_addr_o <=`NOPRegAddr;
-        reg2_addr_o <=`NOPRegAddr;
-        reg1_read_o <=1'b0;
-        reg2_read_o <=1'b0;
+        raddr1_o <=`NOPRegAddr;
+        raddr2_o <=`NOPRegAddr;
+        reg1_re_o <=1'b0;
+        reg2_re_o <=1'b0;
         imm <=`ZeroWord;
         instvalid <=`InstInvalid;
-        reg_write_o <=`WriteDisable;
+       we_o <=`WriteDisable;
         waddr_o <=`NOPRegAddr;
         alusel_o <=`EXE_RESULT_NOP;
         aluop_o <=`EXE_OP_NOP;
     end else begin
-        reg1_addr_o <=inst_i[`Reg1addr];
-        reg2_addr_o <=inst_i[`Reg2addr];
-        reg1_read_o <=1'b0;
-        reg2_read_o <=1'b0;
+        raddr1_o <=inst_i[`Reg1addr];
+        raddr2_o <=inst_i[`Reg2addr];
+        reg1_re_o <=1'b0;
+        reg2_re_o <=1'b0;
         imm <=`ZeroWord;
         instvalid <=`InstInvalid;
-        reg_write_o <=`WriteDisable;
+         we_o <=`WriteDisable;
         waddr_o <=`NOPRegAddr; 
         alusel_o <=`EXE_RESULT_NOP;
         aluop_o <=`EXE_OP_NOP;
@@ -89,11 +89,11 @@ always @(*) begin
                                     1'b1:begin
                                         case (inst_i[24:22])
                                             `EXE_ORI:begin
-                                                    reg1_read_o <=1'b0;
-                                                    reg2_read_o <=1'b1;
+                                                    reg1_re_o <=1'b0;
+                                                    reg2_re_o <=1'b1;
                                                 
                                                     imm<={20'b0,inst_i[21:10]};
-                                                    reg_write_o<=`WriteEnable;
+                                                    we_o<=`WriteEnable;
                                                     waddr_o <=inst_i[`Reg3addr];
                                                     alusel_o <=`EXE_RESULT_LOGIC;
                                                     aluop_o <=`EXE_OP_ORI;
@@ -220,25 +220,25 @@ end
 //确定第1个源操作数
 always @(*) begin
     if(rst==`RstEnable)begin
-        reg1_data_o <=`ZeroWord;//端口1的值
-    end else if(reg1_read_o==1'b1)begin
-        reg1_data_o <=reg1_data_i;
-    end else if(reg1_read_o==1'b0)begin
-        reg1_data_o <=imm; 
+        reg1_o <=`ZeroWord;//端口1的值
+    end else if(reg1_re_o==1'b1)begin
+        reg1_o <=reg1_i;
+    end else if(reg1_re_o==1'b0)begin
+        reg1_o <=imm; 
     end else begin
-        reg1_data_o <=`ZeroWord;
+        reg1_o <=`ZeroWord;
     end
 end
 //确定第2个源操作数
 always @(*) begin
     if(rst==`RstEnable)begin
-        reg2_data_o <=`ZeroWord;
-    end else if(reg2_read_o==1'b1)begin
-        reg2_data_o <=reg2_data_i; //端口2的值
-    end else if(reg2_read_o==1'b0)begin
-        reg2_data_o <=imm; 
+        reg2_o <=`ZeroWord;
+    end else if(reg2_re_o==1'b1)begin
+        reg2_o <=reg2_i; //端口2的值
+    end else if(reg2_re_o==1'b0)begin
+        reg2_o <=imm; 
     end else begin
-        reg2_data_o <=`ZeroWord;
+        reg2_o <=`ZeroWord;
     end
 end
 

@@ -24,7 +24,7 @@ module Regfile (
     //read port 2
     input wire re2 ,
     input wire [`RegAddrBus] raddr2,
-        output reg [`RegBus] rdata2
+    output reg [`RegBus] rdata2
 
 );
 // 32 registers

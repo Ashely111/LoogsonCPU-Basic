@@ -14,15 +14,15 @@ module Ex (
     input wire [`RegBus] reg1_i,
     input wire [`RegBus] reg2_i,
     input wire [`RegAddrBus] waddr_i,
-    input wire reg_write_i,
+    input wire we_i,
     input wire[`AluSelBus] alusel_i,
     input wire[`AluOpBus] aluop_i,
 
     // result out
 
-    output reg[`RegBus] ex_wdata_o,
-    output reg[`RegAddrBus] ex_waddr_o,
-    output reg ex_write_o
+    output reg[`RegBus] wdata_o,
+    output reg[`RegAddrBus] waddr_o,
+    output reg we_o
     
 
 
@@ -46,14 +46,14 @@ reg[`RegBus] logicout ;
         end
     end 
     always @(*) begin
-        ex_waddr_o <=waddr_i;//写寄存器地址
-        ex_write_o <=reg_write_i;//写使能
+        waddr_o <=waddr_i;//写寄存器地址
+        we_o <=we_i;//写使能
         case (alusel_i)
             `EXE_RESULT_LOGIC:begin //将逻辑运算的值作为输出结果
-                ex_wdata_o <=logicout;
+                wdata_o <=logicout;
             end 
             default:begin
-                ex_wdata_o <=`ZeroWord;//
+                wdata_o <=`ZeroWord;//
             end 
         endcase
     end
