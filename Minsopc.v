@@ -20,7 +20,7 @@ wire Inst_rom_AHU_LA2023_inst;
 AHU_LA2023 AHU_LA2023_0(
     .clk(clk),
     .rst(rst),
-    .Inst_i(Inst_rom_AHU_LA2023_inst),
+    .inst_i(Inst_rom_AHU_LA2023_inst),
 
     .inst_addr_o(AHU_LA2023_Inst_rom_instaddr),
     .rom_ce_o(AHU_LA2023_Inst_rom_ce)
