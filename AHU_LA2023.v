@@ -98,7 +98,7 @@ If2Id If2Id0(
 //instance Id
 
 Id Id0(
-    .clk(clk),
+
     .rst(rst),
     .pc_i(If2Id_Id_pc),
     .inst_i(If2Id_Id_inst),
