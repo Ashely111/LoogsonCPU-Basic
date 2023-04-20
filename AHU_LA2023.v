@@ -152,7 +152,7 @@ Id2Ex Id2Ex0(
     .we_o(Id2Ex_Ex_we),
     .waddr_o(Id2Ex_Ex_waddr),
     .alusel_o(Id2Ex_Ex_alusel),
-    .aluop(Id2Ex_Ex_aluop)
+    .aluop_o(Id2Ex_Ex_aluop)
 );
 
 
