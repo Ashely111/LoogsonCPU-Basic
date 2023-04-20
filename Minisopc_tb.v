@@ -24,7 +24,7 @@ module Minisopc_tb ();
     end
 
     Minisopc Minisopc0(
-        .clk(clk),
+        .clk(CLOCK_50),
         .rst(rst)
     );
 endmodule
