@@ -15,7 +15,7 @@ module Minisopc(
 wire AHU_LA2023_Inst_rom_ce;
 wire AHU_LA2023_Inst_rom_instaddr;
 
-wire Inst_rom_AHU_LA2023_inst;
+wire[`InstBus] Inst_rom_AHU_LA2023_inst;
 
 AHU_LA2023 AHU_LA2023_0(
     .clk(clk),
