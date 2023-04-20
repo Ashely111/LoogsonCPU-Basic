@@ -6,7 +6,7 @@
 //
 //
 //////////////////////////////////////////////////////////////
-
+`include "Defines.v"
 module Minisopc(
     input wire clk,
     input wire rst
