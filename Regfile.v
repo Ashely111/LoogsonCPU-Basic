@@ -29,6 +29,9 @@ module Regfile (
 );
 // 32 registers
 reg [`RegBus] regs[0:`RegNum-1]  ;
+
+
+
 // write operation
 always @(posedge clk) begin
   if (rst==`RstDisable) begin

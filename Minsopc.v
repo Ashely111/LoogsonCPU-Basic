@@ -13,7 +13,7 @@ module Minisopc(
 );
 // connect to Inst_rom
 wire AHU_LA2023_Inst_rom_ce;
-wire AHU_LA2023_Inst_rom_instaddr;
+wire[`InstAddrBus] AHU_LA2023_Inst_rom_instaddr;
 
 wire[`InstBus] Inst_rom_AHU_LA2023_inst;
 

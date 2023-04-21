@@ -160,7 +160,7 @@ Id2Ex Id2Ex0(
 
 Ex Ex0(
     .rst(rst),
-    .reg1_i(Id2Ex_Ex_alusel),
+    .reg1_i(Id2Ex_Ex_reg1),
     .reg2_i(Id_Id2Ex_reg2),
     .waddr_i(Id2Ex_Ex_waddr),
     .we_i(Id2Ex_Ex_we),
