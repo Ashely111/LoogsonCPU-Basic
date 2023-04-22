@@ -164,7 +164,7 @@ Ex Ex0(
     .reg2_i(Id_Id2Ex_reg2),
     .waddr_i(Id2Ex_Ex_waddr),
     .we_i(Id2Ex_Ex_we),
-    .alusel_i(Id_Id2Ex_alusel),
+    .alusel_i(Id2Ex_Ex_alusel),
     .aluop_i(Id2Ex_Ex_aluop),
 
     .wdata_o(Ex_Ex2Mem_wdata),

@@ -35,7 +35,7 @@ reg [`RegBus] regs[0:`RegNum-1]  ;
 // write operation
 always @(posedge clk) begin
   if (rst==`RstDisable) begin
-    if ((we==`WriteEnable)&&(`RegNumLog2'h0)) begin
+    if ((we==`WriteEnable)&&(waddr !=`RegNumLog2'h0)) begin
         regs[waddr] <= wdata;
     end
   end  

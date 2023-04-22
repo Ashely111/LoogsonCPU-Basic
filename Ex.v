@@ -10,25 +10,20 @@
 module Ex (
     input wire rst,
     // signal from id
-
+    input wire[`AluSelBus] alusel_i,
+    input wire[`AluOpBus] aluop_i,
     input wire [`RegBus] reg1_i,
     input wire [`RegBus] reg2_i,
     input wire [`RegAddrBus] waddr_i,
     input wire we_i,
-    input wire[`AluSelBus] alusel_i,
-    input wire[`AluOpBus] aluop_i,
+
 
     // result out
-
-    output reg[`RegBus] wdata_o,
+    output reg we_o,
     output reg[`RegAddrBus] waddr_o,
-    output reg we_o
-    
+   output reg[`RegBus] wdata_o
 
-
-
-
-);
+ );
 reg[`RegBus] logicout ;
 
     always @(*) begin
@@ -57,11 +52,6 @@ reg[`RegBus] logicout ;
             end 
         endcase
     end
-
-
-
-
-
 
 
 endmodule
