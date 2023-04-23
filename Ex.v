@@ -21,7 +21,7 @@ module Ex (
     // result out
     output reg we_o,
     output reg[`RegAddrBus] waddr_o,
-   output reg[`RegBus] wdata_o
+    output reg[`RegBus] wdata_o
 
  );
 reg[`RegBus] logicout ;
