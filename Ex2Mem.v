@@ -13,8 +13,8 @@ module Ex2Mem (
     input wire clk,
 
     //input from EXE 
-    input wire[`RegBus] waddr_i,
-    input wire[`RegAddrBus] wdata_i,
+    input wire[`RegAddrBus] waddr_i,
+    input wire[`RegBus] wdata_i,
     input wire we_i,
     // output to MEM
     output reg[`RegBus] wdata_o,

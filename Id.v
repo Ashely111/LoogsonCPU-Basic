@@ -47,176 +47,67 @@ reg instvalid;
 //decode
 
 always @(*) begin
-    if(rst==`RstEnable)begin
-        raddr1_o <=`NOPRegAddr;
-        raddr2_o <=`NOPRegAddr;
-        reg1_re_o <=1'b0;
-        reg2_re_o <=1'b0;
-        imm <=`ZeroWord;
-        instvalid <=`InstInvalid;
-       we_o <=`WriteDisable;
-        waddr_o <=`NOPRegAddr;
-        alusel_o <=`EXE_RESULT_NOP;
-        aluop_o <=`EXE_OP_NOP;
-    end else begin
-        raddr1_o <=inst_i[`Reg1addr];
-        raddr2_o <=inst_i[`Reg2addr];
-        reg1_re_o <=1'b0;
-        reg2_re_o <=1'b0;
-        imm <=`ZeroWord;
-        instvalid <=`InstInvalid;
-         we_o <=`WriteDisable;
-        waddr_o <=`NOPRegAddr; 
-        alusel_o <=`EXE_RESULT_NOP;
-        aluop_o <=`EXE_OP_NOP;
+        if(rst==`RstEnable)begin
+            raddr1_o <=`NOPRegAddr;
+            raddr2_o <=`NOPRegAddr;
+            reg1_re_o <=1'b0;
+            reg2_re_o <=1'b0;
+            imm <=`ZeroWord;
+            instvalid <=`InstInvalid;
+        we_o <=`WriteDisable;
+            waddr_o <=`NOPRegAddr;
+            alusel_o <=`EXE_RESULT_NOP;
+            aluop_o <=`EXE_OP_NOP;
+        end else begin
+            raddr1_o <=inst_i[`Reg1addr];
+            raddr2_o <=inst_i[`Reg2addr];
+            reg1_re_o <=1'b0;
+            reg2_re_o <=1'b0;
+            imm <=`ZeroWord;
+            instvalid <=`InstInvalid;
+            we_o <=`WriteDisable;
+            waddr_o <=`NOPRegAddr; 
+            alusel_o <=`EXE_RESULT_NOP;
+            aluop_o <=`EXE_OP_NOP;
 
-        case (op_10)//第30位作为第一类指令特征码
-            1'b1:begin
-                
-            end
-            1'b0:begin
-                case (op_20)//第29位作为第二类指令特征码
-                    1'b1:begin
-                        
-                    end
-                    1'b0:begin
-                        case (op_30)//第28位作为第三类指令特征码
-                            1'b1:begin
-                                
-                            end
-                            1'b0:begin
-                                case (op_60)//第25位作为第四类指令特征码
-                                    1'b1:begin
-                                        case (inst_i[24:22])
-                                            `EXE_ORI:begin
-                                                    reg1_re_o <=1'b0;
-                                                    reg2_re_o <=1'b1;
-                                                
-                                                    imm<={20'b0,inst_i[21:10]};
-                                                    we_o<=`WriteEnable;
-                                                    waddr_o <=inst_i[`Reg3addr];
-                                                    alusel_o <=`EXE_RESULT_LOGIC;
-                                                    aluop_o <=`EXE_OP_ORI;
-                                                    instvalid <=`InstValid;
-                                            end
-                                            default:begin
-                                                
-                                            end
-                                        endcase
-                                    end
-                                    1'b0:begin
-                                        case (op_90)//第22位作为第五类指令特征码
-                                            1'b1:begin
-                                                
-                                            end
-                                            1'b0:begin
-                                                case (op_A0)//第21位作为第六类指令特征码
-                                                    1'b1:begin
-                                                        
-                                                    end
-                                                    1'b0:begin
-                                                       case (op_B0)//第20位作为第七类指令特征码
-                                                            1'b1:begin
-                                                                
-                                                            end
-                                                           // 1'b0:
-                                                        default:begin
-                                                            
-                                                        end
-                                                       endcase 
-                                                    end
-
-
-
-
-
-
-
-                                                    default: begin
-                                                        
-                                                    end
-                                                endcase
-                                            end 
-
-
-
-
-
-
-
-                                            default:begin
-                                                
-                                            end
-                                        endcase
-                                    end
-
-
-
-
-
-
-
-
-
-
-
-                                    default:begin
-                                        
-                                    end 
-                                endcase
-                            end
-
-
-
-
-
-
-
-
-
-
-
-
-                            default:begin
-                                
-                            end 
-                        endcase
-                    end
-
-
-
-
-
-
-
-
-
-
-
-                    default:begin
-                        
-                    end 
-                endcase  
-            end
-
-
-
-
-
-
-
-
-
+            if (op_10==1'b1) begin//第30位作为第一类指令特征码
             
-            default:begin
-                
-            end 
-        endcase
 
 
+                end else if (op_20==1'b1) begin//第29位作为第二类指令特征码
+                        
 
-    end
+                    end else if (op_30==1'b1) begin//第28位作为第三类指令特征码
+                            
+                        end else if (op_60==1'b1)begin//第25位作为第四类指令特征码
+                            case (inst_i[24:22])
+                                `EXE_ORI:begin
+                                        reg1_re_o <=1'b0;
+                                        reg2_re_o <=1'b1;
+                                    
+                                        imm<={20'b0,inst_i[21:10]};
+                                        we_o<=`WriteEnable;
+                                        waddr_o <=inst_i[`Reg3addr];
+                                        alusel_o <=`EXE_RESULT_LOGIC;
+                                        aluop_o <=`EXE_OP_ORI;
+                                        instvalid <=`InstValid;
+                                    end  
+                            endcase                     
+                            end else if (op_90==1'b1) begin//第22位作为第五类指令特征码
+                            
+                                end else if (op_A0==1'b1) begin//第21位作为第六类指令特征码
+                                
+                                    end else if (op_B0==1'b1) begin//第20位作为第七类指令特征码
+                                
+                                        end
+        end
+
 end
+
+
+
+
+
 //确定第1个源操作数
 always @(*) begin
     if(rst==`RstEnable)begin

@@ -11,7 +11,7 @@
 module AHU_LA2023 (
     input wire clk,
     input wire rst,
-    input wire [`RegBus] inst_i,
+    input wire [`InstBus] inst_i,
     output wire [`InstAddrBus] inst_addr_o, 
     output wire rom_ce_o  
 );
