@@ -16,6 +16,11 @@ module Ex2Mem (
     input wire[`RegAddrBus] waddr_i,
     input wire[`RegBus] wdata_i,
     input wire we_i,
+
+    //stall
+    input wire [`StallBus] stall_i,
+
+
     // output to MEM
     output reg[`RegBus] wdata_o,
     output reg[`RegAddrBus] waddr_o,
@@ -27,7 +32,11 @@ always @(posedge clk) begin
         waddr_o <=`ZeroWord;
         wdata_o <=`ZeroWord;
         we_o <=`WriteDisable;
-    end else begin
+    end else if ((stall_i[2]==`Stop)&&stall_i[1]==`NotStop) begin
+        waddr_o <=`ZeroWord;
+        wdata_o <=`ZeroWord;
+        we_o <=`WriteDisable; 
+    end else if(stall_i[1]==`NotStop) begin
         we_o <=we_i;
         waddr_o <=waddr_i;
         wdata_o <=wdata_i;

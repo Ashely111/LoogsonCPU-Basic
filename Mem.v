@@ -17,6 +17,7 @@ module Mem (
     output reg[`RegAddrBus] waddr_o,
     output reg[`RegBus] wdata_o,
     output reg we_o
+
 );
 always @(*) begin
     if (rst==`RstEnable) begin

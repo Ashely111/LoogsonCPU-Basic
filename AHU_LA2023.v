@@ -73,13 +73,57 @@ wire Mem2Wb_Regfile_we;
 wire [`RegBus] Mem2Wb_Regfile_wdata ;
 
 
+//stall
+wire [`StallBus] CTRL_stall ;
+wire Id_CTRL_stallreq;
+wire Ex_CTRL_stallreq;
+
+// between div and ex
+
+// wire [`RegBus] Ex_Div_opdata1 ;
+// wire [`RegBus] EX_Div_opdata2 ;
+// wire signed_div;
+// wire div_cancel;
+// wire div_start;
+
+// wire [`DoubleRegBus] Div_Ex_dive_result;
+// wire Div_Ex_div_ready;
+
+//branch
+
+
+wire [`InstAddrBus]Id_PcReg_branch_addr;
+wire[`InstAddrBus]Id_Id2Ex_link_addr;
+wire [`InstAddrBus]Id2Ex_Ex_link_addr;
+wire Id_PcReg_branch_flag;
+wire Id_Id2Ex_next_inst_in_delayslot;
+wire Id_Id2Ex_is_in_delayslot;
+wire Id2Ex_Ex_is_in_delayslot;
+wire Id2Ex_Id_is_in_delayslot;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // instance PcReg
 
 PcReg PcReg0(
     .clk(clk),
     .rst(rst),
     .pc(PcReg_If2Id_pc),
-    .ce(rom_ce_o)
+    .ce(rom_ce_o),
+    .stall_i(CTRL_stall),
+    .branch_target_addr_i(Id_PcReg_branch_addr),
+    .branch_flag_i(Id_PcReg_branch_flag)//分支信号
 );
 
 assign inst_addr_o =PcReg_If2Id_pc;
@@ -92,7 +136,8 @@ If2Id If2Id0(
     .if_pc(PcReg_If2Id_pc),
     .if_inst(inst_i),
     .id_pc(If2Id_Id_pc),
-    .id_inst(If2Id_Id_inst)
+    .id_inst(If2Id_Id_inst),
+    .stall_i(CTRL_stall)
 );
 
 //instance Id
@@ -113,8 +158,25 @@ Id Id0(
     .reg1_o(Id_Id2Ex_reg1),
     .reg2_o(Id_Id2Ex_reg2),
     .alusel_o(Id_Id2Ex_alusel),
-    .aluop_o(Id_Id2Ex_aluop)
+    .aluop_o(Id_Id2Ex_aluop),
 
+
+    .Ex_we_i(Ex_Ex2Mem_we),
+    .Ex_waddr_i(Ex_Ex2Mem_waddr),
+    .Ex_wdata_i(Ex_Ex2Mem_wdata),
+
+    .Mem_we_i(Mem_Mem2Wb_we),
+    .Mem_waddr_i(Mem_Mem2Wb_waddr),
+    .Mem_wdata_i(Mem_Mem2Wb_wdata),
+
+    // .Id_CTRL_stallreq_o(Id_CTRL_stallreq)
+
+    .is_in_delayslot_o(Id_Id2Ex_is_in_delayslot),
+    .link_addr_o(Id_Id2Ex_link_addr),
+    .branch_target_addr_o(Id_PcReg_branch_addr),
+    .branch_flag_o(Id_PcReg_branch_flag),
+    .next_inst_in_delayslot_o(Id_Id2Ex_next_inst_in_delayslot),
+    .is_in_delayslot_i(Id2Ex_Id_is_in_delayslot)
 );
 
 
@@ -124,15 +186,15 @@ Id Id0(
 Regfile Regfile0(
     .clk(clk),
     .rst(rst),
-    .we(Mem2Wb_Regfile_we),
-    .waddr(Mem2Wb_Regfile_waddr),
-    .wdata(Mem2Wb_Regfile_wdata),
-    .re1(Id_Regfile_reg1_re),
-    .raddr1(Id_Regfile_raddr1),
-    .re2(Id_Regfile_reg2_re),
-    .raddr2(Id_Regfile_raddr2),
-    .rdata1(Regfile_Id_reg1),
-    .rdata2(Regfile_Id_reg2)
+    .we_i(Mem2Wb_Regfile_we),
+    .waddr_i(Mem2Wb_Regfile_waddr),
+    .wdata_i(Mem2Wb_Regfile_wdata),
+    .re1_i(Id_Regfile_reg1_re),
+    .raddr1_i(Id_Regfile_raddr1),
+    .re2_i(Id_Regfile_reg2_re),
+    .raddr2_i(Id_Regfile_raddr2),
+    .rdata1_o(Regfile_Id_reg1),
+    .rdata2_o(Regfile_Id_reg2)
 );
 
 //instance Id2Ex
@@ -152,7 +214,17 @@ Id2Ex Id2Ex0(
     .we_o(Id2Ex_Ex_we),
     .waddr_o(Id2Ex_Ex_waddr),
     .alusel_o(Id2Ex_Ex_alusel),
-    .aluop_o(Id2Ex_Ex_aluop)
+    .aluop_o(Id2Ex_Ex_aluop),
+    .stall_i(CTRL_stall),
+
+    //branch
+    .idis_in_delayslot_i(Id_Id2Ex_is_in_delayslot),
+    .link_addr_i(Id_Id2Ex_link_addr),
+    .next_inst_in_delayslot_i(Id_Id2Ex_next_inst_in_delayslot),
+
+    .exis_in_delayslot_o(Id2Ex_Ex_is_in_delayslot),
+    .link_addr_o(Id2Ex_Ex_link_addr),
+    .is_in_delayslot_o(Id2Ex_Id_is_in_delayslot)
 );
 
 
@@ -161,7 +233,7 @@ Id2Ex Id2Ex0(
 Ex Ex0(
     .rst(rst),
     .reg1_i(Id2Ex_Ex_reg1),
-    .reg2_i(Id_Id2Ex_reg2),
+    .reg2_i(Id2Ex_Ex_reg2),
     .waddr_i(Id2Ex_Ex_waddr),
     .we_i(Id2Ex_Ex_we),
     .alusel_i(Id2Ex_Ex_alusel),
@@ -169,7 +241,23 @@ Ex Ex0(
 
     .wdata_o(Ex_Ex2Mem_wdata),
     .waddr_o(Ex_Ex2Mem_waddr),
-    .we_o(Ex_Ex2Mem_we)
+    .we_o(Ex_Ex2Mem_we),
+
+    // .div_ready_i(Div_Ex_div_ready),
+    // .div_result_i(Div_Ex_dive_result),
+
+    // .div_opdata1_o(Ex_Div_opdata1),
+    // .div_opdata2_o(EX_Div_opdata2),
+    // .sigend_div_o(signed_div),
+    // .cancel_o(div_cancel),
+    // .start_o(div_start)
+
+
+    // .Ex_CTRL_stallreq_o(Ex_CTRL_stallreq)
+
+    //branch
+    .is_in_delayslot_i(Id2Ex_Ex_is_in_delayslot),
+    .link_addr_i(Id2Ex_Ex_link_addr)
 );
 
 
@@ -185,7 +273,8 @@ Ex2Mem Ex2Mem0(
 
     .waddr_o(Ex2Mem_Mem_waddr),
     .wdata_o(Ex2Mem_Mem_wdata),
-    .we_o(Ex2Mem_Mem_we)
+    .we_o(Ex2Mem_Mem_we),
+    .stall_i(CTRL_stall)
 
 );
 
@@ -216,18 +305,41 @@ Mem2Wb Me2Wb0(
 
     .waddr_o(Mem2Wb_Regfile_waddr),
     .wdata_o(Mem2Wb_Regfile_wdata),
-    .we_o(Mem2Wb_Regfile_we)
+    .we_o(Mem2Wb_Regfile_we),
+    .stall_i(CTRL_stall)    
+        
 );
 
 
+//instance CTRL
+CTRL CTRL0 (
+    .rst(rst),
+    .Id_CTRL_stallreq_i(Id_CTRL_stallreq),
+    .Ex_CTRL_stallreq_i(Ex_CTRL_stallreq),
+
+    .stall_o(CTRL_stall)
+ 
+);
+
+
+//instance div
+
+// Div Div0(
+//     .clk(clk),
+//     .rst(rst),
+//     .opdata1_i(Ex_Div_opdata1),
+//     .opdata2_i(Ex_Div_opdata2),
+//     .signed_div_i(signed_div),
+//     .cancel_i(div_cancel),
+//     .start_i(div_start),
+
+//     .div_result_o(Div_Ex_div_result),
+//     .div_ready_o(Div_Ex_div_ready)
 
 
 
 
-
-
-
-
+// );
 
 
 

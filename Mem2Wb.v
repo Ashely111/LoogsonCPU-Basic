@@ -15,9 +15,14 @@ module Mem2Wb (
     input wire[`RegBus] wdata_i,
     input wire we_i,
 
+    //stall
+    input wire [`StallBus] stall_i,
+
     output reg[`RegAddrBus] waddr_o,
     output reg[`RegBus] wdata_o,
     output reg we_o
+    
+
 
 );
 always @(posedge clk) begin
@@ -25,7 +30,11 @@ always @(posedge clk) begin
         waddr_o <=`NOPRegAddr;
         wdata_o <=`ZeroWord;
         we_o <=`WriteDisable;
-    end else begin
+    end else if ((stall_i[1]==`Stop)&&(stall_i[0])) begin
+        waddr_o <=`NOPRegAddr;
+        wdata_o <=`ZeroWord;
+        we_o <=`WriteDisable;
+    end else if(stall_i[0]==`NotStop) begin
         waddr_o <=waddr_i;
         wdata_o <=wdata_i;
         we_o <=we_i;
