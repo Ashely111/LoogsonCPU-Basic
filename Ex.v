@@ -77,7 +77,7 @@ reg stallreq_for_div;
 
 
 
-//
+// //
 
 
 
@@ -102,10 +102,15 @@ assign mult_result_temp =mult_opdata1 *mult_opdata2;
 
 
 
+// assign aluop_o =aluop_i;//访存阶段确定加载储存的类型
 
-assign aluop_o =aluop_i;//访存阶段确定加载储存的类型
-assign mem_addr_o = reg2_i+{{30{inst_i[21]}},inst_i[21:10]};//访存地址
-assign reg1_o =reg1_i ;//储存数据
+// assign mem_addr_o = reg2_i+{{20{inst_i[21]}},inst_i[21:10]};//访存地址
+
+// assign reg1_o =reg1_i ;//储存数据
+
+
+
+
 
 
 
@@ -176,7 +181,7 @@ end
                     shiftout <=reg2_i >>reg1_i[4:0];
                 end
                 `EXE_OP_SRA_W:begin
-                    shiftout <= ({32{reg2_i[31]}})<<(6'd32-{1'b0,reg1_i[4:0]})|reg1_i >>reg1_i[4:0];              
+                    shiftout <=(reg2_i >>reg1_i[4:0])|(({32{reg2_i[31]}})<<(6'd32-{1'b0,reg1_i[4:0]}) );              
                  end 
                  `EXE_OP_SLLI_W:begin
                     shiftout <=reg2_i <<reg1_i[4:0];
@@ -185,7 +190,7 @@ end
                     shiftout <=reg2_i <<reg1_i[4:0];
                  end
                  `EXE_OP_SRAI_W:begin
-                    shiftout <=({32{reg2_i[31]}})<<(6'd32-{1'b0,reg1_i[4:0]})|reg1_i >>reg1_i[4:0]; 
+                    shiftout <=({32{reg2_i[31]}})<<(6'd32-{1'b0,reg1_i[4:0]})|reg2_i >>reg1_i[4:0]; 
                  end
                 default:begin
                     

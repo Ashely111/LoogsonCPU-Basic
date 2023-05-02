@@ -34,7 +34,7 @@ module Ex2Mem (
     output reg we_o,
 //Load&Store
     output reg[`AluOpBus] aluop_o,
-    output reg[`InstAddrBus] mem_adddr_o,
+    output reg[`InstAddrBus] mem_addr_o,
     output reg[`RegBus] reg1_o
 );
 
@@ -44,21 +44,21 @@ always @(posedge clk) begin
         wdata_o <=`ZeroWord;
         we_o <=`WriteDisable;
         aluop_o <=`EXE_OP_NOP;
-        mem_adddr_o<=`ZeroWord;
+        mem_addr_o<=`ZeroWord;
         reg1_o<=`ZeroWord;
     end else if ((stall_i[2]==`Stop)&&stall_i[1]==`NotStop) begin
         waddr_o <=`ZeroWord;
         wdata_o <=`ZeroWord;
         we_o <=`WriteDisable;
         aluop_o <=`EXE_OP_NOP;
-        mem_adddr_o<=`ZeroWord;
+        mem_addr_o<=`ZeroWord;
         reg1_o<=`ZeroWord;
     end else if(stall_i[1]==`NotStop) begin
         we_o <=we_i;
         waddr_o <=waddr_i;
         wdata_o <=wdata_i;
         aluop_o <=aluop_i;
-        mem_adddr_o<=mem_addr_i;
+        mem_addr_o<=mem_addr_i;
         reg1_o<=reg1_i;
         
     end

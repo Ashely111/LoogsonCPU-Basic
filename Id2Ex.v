@@ -35,7 +35,7 @@ module Id2Ex (
 
     //branch
 
-    input wire idis_in_delay_slot_i,//当前译码阶段指令是否处于延迟槽
+    input wire idis_in_delayslot_i,//当前译码阶段指令是否处于延迟槽
     input wire [`InstAddrBus] link_addr_i,//转移指令要保存的返回地址
     input wire next_inst_in_delayslot_i,//下一条进入译码指令是否处于延迟槽
 
@@ -67,15 +67,15 @@ always @(posedge clk) begin
         exis_in_delayslot_o<=`NotInDelaySlot;
         link_addr_o<=`ZeroWord;
     end else if(stall_i[2]==`NotStop) begin
-        reg1_o <=reg1_i;
-        reg2_o <=reg2_i;
+        reg1_o <= reg1_i;
+        reg2_o <= reg2_i;
         we_o <=we_i;
         waddr_o <=waddr_i;
         aluop_o <=aluop_i;
         alusel_o <=alusel_i;
         exis_in_delayslot_o<=next_inst_in_delayslot_i;
         link_addr_o<=link_addr_i;
-        is_in_delayslot_o <=idis_in_delay_slot_i;
+        is_in_delayslot_o <=idis_in_delayslot_i;
         inst_o <=inst_i;
     end
 end  

@@ -75,8 +75,8 @@ wire [`RegBus] Mem2Wb_Regfile_wdata ;
 
 //stall
 wire [`StallBus] CTRL_stall ;
-wire Id_CTRL_stallreq;
-wire Ex_CTRL_stallreq;
+// wire Id_CTRL_stallreq;
+// wire Ex_CTRL_stallreq;
 
 // between div and ex
 
@@ -188,7 +188,7 @@ Id Id0(
     .Mem_waddr_i(Mem_Mem2Wb_waddr),
     .Mem_wdata_i(Mem_Mem2Wb_wdata),
 
-    // .Id_CTRL_stallreq_o(Id_CTRL_stallreq)
+    //.Id_CTRL_stallreq_o(Id_CTRL_stallreq),
 
     .is_in_delayslot_o(Id_Id2Ex_is_in_delayslot),
     .link_addr_o(Id_Id2Ex_link_addr),
@@ -247,7 +247,8 @@ Id2Ex Id2Ex0(
     .link_addr_o(Id2Ex_Ex_link_addr),
     .is_in_delayslot_o(Id2Ex_Id_is_in_delayslot),
 
-    .inst_i(Id_Id2EX_inst)
+    .inst_i(Id_Id2EX_inst),
+    .inst_o(Id2Ex_Ex_inst)
 );
 
 
@@ -276,7 +277,7 @@ Ex Ex0(
     // .start_o(div_start)
 
 
-    // .Ex_CTRL_stallreq_o(Ex_CTRL_stallreq)
+    //.Ex_CTRL_stallreq_o(Ex_CTRL_stallreq),
 
     //branch
     .is_in_delayslot_i(Id2Ex_Ex_is_in_delayslot),
@@ -284,7 +285,7 @@ Ex Ex0(
 
 
     .inst_i(Id2Ex_Ex_inst),
-    .aluop_O(Ex_Ex2Mem_aluop),
+    .aluop_o(Ex_Ex2Mem_aluop),
     .mem_addr_o(Ex_Ex2Mem_mem_addr),
     .reg1_o(Ex_Ex2Mem_reg1)
 );
@@ -363,8 +364,8 @@ Mem2Wb Me2Wb0(
 //instance CTRL
 CTRL CTRL0 (
     .rst(rst),
-    .Id_CTRL_stallreq_i(Id_CTRL_stallreq),
-    .Ex_CTRL_stallreq_i(Ex_CTRL_stallreq),
+    //.Id_CTRL_stallreq_i(Id_CTRL_stallreq),
+   // .Ex_CTRL_stallreq_i(Ex_CTRL_stallreq),
 
     .stall_o(CTRL_stall)
  
@@ -399,14 +400,14 @@ CTRL CTRL0 (
 Ram Ram0(
 
     .clk(clk),
-    .rst(rst),
+
     .data_i(Mem_Ram_data),
     .we_i(Mem_Ram_mem_we),
     .addr_i(Mem_Ram_addr),
     .ce_i(Mem_Ram_mem_ce),
     .datatype_sel_i(Mem_Ram_datatype_sel),
 
-    .data_o(Mem_Ram_data)
+    .data_o(Ram_Mem_data)
 
 
 );

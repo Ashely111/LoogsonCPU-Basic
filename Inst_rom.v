@@ -20,7 +20,7 @@ reg[`InstBus] inst_mem[0:`InstMemNum-1];
 
 //initial mem
 
-initial $readmemh ("inst_rom_andi.data",inst_mem);
+initial $readmemh ("inst_rom_load_store.data",inst_mem);
 
 //output inst
 
