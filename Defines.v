@@ -167,6 +167,27 @@
 `define EXE_RESULT_BRANCH 3'b101
 `define EXE_RESULT_LOAD_STORE 3'b110
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //AluOp//执行阶段识别///////////////////////////////////////////
 `define EXE_OP_NOP 6'b000000 //无操作
 `define EXE_OP_ORI 6'b001110//
