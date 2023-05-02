@@ -101,6 +101,25 @@ wire Id_Id2Ex_is_in_delayslot;
 wire Id2Ex_Ex_is_in_delayslot;
 wire Id2Ex_Id_is_in_delayslot;
 
+//Load/Store
+
+
+wire[`InstAddrBus] Id_Id2EX_inst;
+wire[`InstAddrBus] Id2Ex_Ex_inst;
+wire[`AluOpBus] Ex_Ex2Mem_aluop;
+wire[`InstAddrBus] Ex_Ex2Mem_mem_addr;
+wire[`RegBus] Ex_Ex2Mem_reg1;
+wire[`AluOpBus] Ex2Mem_Mem_aluop;
+wire[`InstAddrBus] Ex2Mem_Mem_mem_addr;
+wire[`RegBus] Ex2Mem_Mem_reg1 ;
+wire[`InstAddrBus] Mem_Ram_addr;
+wire[`RegBus] Mem_Ram_data;
+wire Mem_Ram_mem_we;
+wire[`DataTypeBus] Mem_Ram_datatype_sel;
+wire Mem_Ram_mem_ce;
+wire[`RegBus] Ram_Mem_data;
+
+
 
 
 
@@ -176,7 +195,9 @@ Id Id0(
     .branch_target_addr_o(Id_PcReg_branch_addr),
     .branch_flag_o(Id_PcReg_branch_flag),
     .next_inst_in_delayslot_o(Id_Id2Ex_next_inst_in_delayslot),
-    .is_in_delayslot_i(Id2Ex_Id_is_in_delayslot)
+    .is_in_delayslot_i(Id2Ex_Id_is_in_delayslot),
+
+    .inst_o(Id_Id2EX_inst)
 );
 
 
@@ -224,7 +245,9 @@ Id2Ex Id2Ex0(
 
     .exis_in_delayslot_o(Id2Ex_Ex_is_in_delayslot),
     .link_addr_o(Id2Ex_Ex_link_addr),
-    .is_in_delayslot_o(Id2Ex_Id_is_in_delayslot)
+    .is_in_delayslot_o(Id2Ex_Id_is_in_delayslot),
+
+    .inst_i(Id_Id2EX_inst)
 );
 
 
@@ -257,7 +280,13 @@ Ex Ex0(
 
     //branch
     .is_in_delayslot_i(Id2Ex_Ex_is_in_delayslot),
-    .link_addr_i(Id2Ex_Ex_link_addr)
+    .link_addr_i(Id2Ex_Ex_link_addr),
+
+
+    .inst_i(Id2Ex_Ex_inst),
+    .aluop_O(Ex_Ex2Mem_aluop),
+    .mem_addr_o(Ex_Ex2Mem_mem_addr),
+    .reg1_o(Ex_Ex2Mem_reg1)
 );
 
 
@@ -274,7 +303,16 @@ Ex2Mem Ex2Mem0(
     .waddr_o(Ex2Mem_Mem_waddr),
     .wdata_o(Ex2Mem_Mem_wdata),
     .we_o(Ex2Mem_Mem_we),
-    .stall_i(CTRL_stall)
+    .stall_i(CTRL_stall),
+
+    .reg1_i(Ex_Ex2Mem_reg1),
+    .mem_addr_i(Ex_Ex2Mem_mem_addr),
+    .aluop_i(Ex_Ex2Mem_aluop),
+
+
+    .reg1_o(Ex2Mem_Mem_reg1),
+    .mem_addr_o(Ex2Mem_Mem_mem_addr),
+    .aluop_o(Ex2Mem_Mem_aluop)
 
 );
 
@@ -289,7 +327,18 @@ Mem Mem0(
 
     .waddr_o(Mem_Mem2Wb_waddr),
     .wdata_o(Mem_Mem2Wb_wdata),
-    .we_o(Mem_Mem2Wb_we)
+    .we_o(Mem_Mem2Wb_we),
+
+    .aluop_i(Ex2Mem_Mem_aluop),
+    .mem_addr_i(Ex2Mem_Mem_mem_addr),
+    .reg1_i(Ex2Mem_Mem_reg1),
+    .mem_data_i(Ram_Mem_data),
+
+    .mem_addr_o(Mem_Ram_addr),
+    .mem_we_o(Mem_Ram_mem_we),
+    .datatype_sel_o(Mem_Ram_datatype_sel),
+    .mem_ce_o(Mem_Ram_mem_ce),
+    .mem_data_o(Mem_Ram_data)
 );
 
 //instance Mem2Wb
@@ -340,7 +389,27 @@ CTRL CTRL0 (
 
 
 // );
+//
 
+
+
+
+//Ram
+
+Ram Ram0(
+
+    .clk(clk),
+    .rst(rst),
+    .data_i(Mem_Ram_data),
+    .we_i(Mem_Ram_mem_we),
+    .addr_i(Mem_Ram_addr),
+    .ce_i(Mem_Ram_mem_ce),
+    .datatype_sel_i(Mem_Ram_datatype_sel),
+
+    .data_o(Mem_Ram_data)
+
+
+);
 
 
 

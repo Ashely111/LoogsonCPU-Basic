@@ -42,7 +42,16 @@ module Ex (
     //branch
 
     input wire is_in_delayslot_i,
-    input wire[`InstAddrBus] link_addr_i
+    input wire[`InstAddrBus] link_addr_i,
+
+    //
+
+
+    input wire[`InstAddrBus] inst_i,
+
+    output wire[`AluOpBus] aluop_o,
+    output wire[`InstAddrBus] mem_addr_o,
+    output wire[`RegBus] reg1_o
 
  );
 reg[`RegBus] logicout ;
@@ -89,6 +98,21 @@ assign mult_opdata2 =(((aluop_i==`EXE_OP_MULH_W)||(aluop_i==`EXE_OP_MUL_W))
                         &&(reg2_i[31]==1'b1))
                         ?(~reg2_i+1) :reg2_i; 
 assign mult_result_temp =mult_opdata1 *mult_opdata2;
+
+
+
+
+
+assign aluop_o =aluop_i;//访存阶段确定加载储存的类型
+assign mem_addr_o = reg2_i+{{30{inst_i[21]}},inst_i[21:10]};//访存地址
+assign reg1_o =reg1_i ;//储存数据
+
+
+
+
+
+
+
 
 //对mult_result_temp 结果修正
 

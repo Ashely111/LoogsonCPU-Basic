@@ -51,8 +51,10 @@ module Id (
     output reg [`InstAddrBus] branch_target_addr_o,//转移目标地址
     output reg is_in_delayslot_o,//当前指令是否处于延迟槽
     output reg[`InstAddrBus] link_addr_o,//转移指令要保存的返回地址
-    output reg next_inst_in_delayslot_o//下条进入译码阶段指令是否位于延迟槽
+    output reg next_inst_in_delayslot_o,//下条进入译码阶段指令是否位于延迟槽
 
+
+    output wire[`InstAddrBus] inst_o
 
 
 
@@ -76,6 +78,7 @@ assign stallreq_o = `NotStop;
 
 assign Pc_plus_4 = pc_i +4;
 
+assign inst_o= inst_i;
 //decode
 
 always @(*) begin
@@ -112,9 +115,8 @@ always @(*) begin
             branch_target_addr_o<=`ZeroWord;
             next_inst_in_delayslot_o<=`NotInDelaySlot;
 
-            if (op_10==1'b1) begin//第30位作为第一类指令特征码          
-                end else if (op_20==1'b1) begin//第29位作为第二类指令特征码  
-                    case (inst_i[30:26])
+            if (op_10==1'b1) begin//第30位作为第一类指令特征码    
+                   case (inst_i[30:26])
                         `EXE_JIRL:begin
                             we_o <=`WriteEnable;
                             waddr_o <=inst_i[`Reg3addr];
@@ -215,6 +217,7 @@ always @(*) begin
                             end
                             
                             instvalid<=`InstValid;
+
                         end
                         `EXE_BLTU:begin
                             we_o<=`WriteDisable;
@@ -229,6 +232,7 @@ always @(*) begin
                                 branch_target_addr_o<={branch_target_addr_o<={{14{inst_i[25]}},inst_i[25:10],2'b0}}+pc_i;
                                 next_inst_in_delayslot_o<=`InDelaySlot;
                             end
+                            instvalid<=`InstValid;
                         end
                         `EXE_BGEU:begin
                             we_o<=`WriteDisable;
@@ -243,11 +247,92 @@ always @(*) begin
                                 branch_target_addr_o<={branch_target_addr_o<={{14{inst_i[25]}},inst_i[25:10],2'b0}}+pc_i;
                                 next_inst_in_delayslot_o<=`InDelaySlot;
                             end
+                            instvalid<=`InstValid;
                         end
                         default:begin
                             
                         end 
-                    endcase                   
+                    endcase             
+                end else if (op_20==1'b1) begin//第29位作为第二类指令特征码  
+                    case (inst_i[25:22])
+                        `EXE_LD_B:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_LD_B;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        end
+                        `EXE_LD_H:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_LD_H;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        
+                        end
+                        `EXE_LD_W:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_LD_W;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        
+                        end
+                        `EXE_LD_BU:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_LD_BU;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid; 
+                        end
+                        `EXE_LD_HU:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_LD_HU;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        end
+                        `EXE_ST_B:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_ST_B;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        end
+                        `EXE_ST_H:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_ST_H;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        end
+                        `EXE_ST_W:begin
+                            we_o <=`WriteEnable;
+                            aluop_o <=`EXE_OP_ST_W;
+                            alusel_o <=`EXE_RESULT_LOAD_STORE;
+                            reg1_re_o<=1'b0;//要储存的数据
+                            reg2_re_o <=1'b1;//地址偏移
+                            waddr_o<=inst_i[`Reg3addr];
+                            instvalid <=`InstValid;
+                        end
+                        default:begin
+                            
+                        end
+                    endcase 
                     end else if (op_30==1'b1) begin//第28位作为第三类指令特征码
                         case (inst_i[27:25])
                             `EXE_LU12I_W:begin

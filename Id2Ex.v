@@ -17,6 +17,9 @@ module Id2Ex (
     input wire we_i,
     input wire [`AluSelBus] alusel_i,
     input wire[`AluOpBus] aluop_i,
+    input wire[`InstAddrBus] inst_i,
+
+    output reg[`InstAddrBus] inst_o,
 
     //stall
     input wire[`StallBus] stall_i,
@@ -73,6 +76,7 @@ always @(posedge clk) begin
         exis_in_delayslot_o<=next_inst_in_delayslot_i;
         link_addr_o<=link_addr_i;
         is_in_delayslot_o <=idis_in_delay_slot_i;
+        inst_o <=inst_i;
     end
 end  
 endmodule

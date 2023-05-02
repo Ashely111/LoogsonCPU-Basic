@@ -44,6 +44,26 @@
 `define NotBranch 1'b0
 `define InDelaySlot 1'b1
 `define NotInDelaySlot 1'b0
+`define DataTypeBus 3:0
+
+//Ram
+
+`define DataAddrBus 31:0
+`define DataBus 31:0
+`define DataMemNum 131071 //RAM大小，128K Byte
+`define DataMemNumLog2 17 //实际使用地址宽度
+`define ByteWidth 7:0 //一个字宽度
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -145,7 +165,7 @@
 `define EXE_RESULT_ARITHMETIC 3'b011
 `define EXE_RESULT_DIV 3'b100
 `define EXE_RESULT_BRANCH 3'b101
-
+`define EXE_RESULT_LOAD_STORE 3'b110
 
 //AluOp//执行阶段识别///////////////////////////////////////////
 `define EXE_OP_NOP 6'b000000 //无操作
