@@ -303,30 +303,31 @@ always @(*) begin
                             instvalid <=`InstValid;
                         end
                         `EXE_ST_B:begin
-                            we_o <=`WriteEnable;
+                            we_o <=`WriteDisable;
                             aluop_o <=`EXE_OP_ST_B;
                             alusel_o <=`EXE_RESULT_LOAD_STORE;
-                            reg1_re_o<=1'b0;//要储存的数据
+                            reg1_re_o<=1'b1;//要储存的数据
+                            raddr1_o<=inst_i[`Reg3addr];
                             reg2_re_o <=1'b1;//地址偏移
-                            waddr_o<=inst_i[`Reg3addr];
+                           
                             instvalid <=`InstValid;
                         end
                         `EXE_ST_H:begin
-                            we_o <=`WriteEnable;
+                            we_o <=`WriteDisable;
                             aluop_o <=`EXE_OP_ST_H;
                             alusel_o <=`EXE_RESULT_LOAD_STORE;
-                            reg1_re_o<=1'b0;//要储存的数据
+                            reg1_re_o<=1'b1;//要储存的数据
                             reg2_re_o <=1'b1;//地址偏移
-                            waddr_o<=inst_i[`Reg3addr];
+                            raddr1_o<=inst_i[`Reg3addr];
                             instvalid <=`InstValid;
                         end
                         `EXE_ST_W:begin
-                            we_o <=`WriteEnable;
+                            we_o <=`WriteDisable;
                             aluop_o <=`EXE_OP_ST_W;
                             alusel_o <=`EXE_RESULT_LOAD_STORE;
-                            reg1_re_o<=1'b0;//要储存的数据
+                            reg1_re_o<=1'b1;//要储存的数据
                             reg2_re_o <=1'b1;//地址偏移
-                            waddr_o<=inst_i[`Reg3addr];
+                            raddr1_o<=inst_i[`Reg3addr];
                             instvalid <=`InstValid;
                         end
                         default:begin

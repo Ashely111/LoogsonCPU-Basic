@@ -50,7 +50,7 @@
 
 `define DataAddrBus 31:0
 `define DataBus 31:0
-`define DataMemNum 131071 //RAM大小，128K Byte
+`define DataMemNum 131071 //RAM大小，128Kb
 `define DataMemNumLog2 17 //实际使用地址宽度
 `define ByteWidth 7:0 //一个字宽度
 

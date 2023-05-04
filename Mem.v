@@ -24,7 +24,7 @@ module Mem (
     output wire mem_we_o,
     output reg [`DataTypeBus]datatype_sel_o,
     output reg [`RegBus]mem_data_o,
-    output reg mem_ce_o,
+    output reg  mem_ce_o,
 
 
     output reg[`RegAddrBus] waddr_o,
@@ -62,7 +62,7 @@ always @(*) begin
             `EXE_OP_LD_B:begin
                 mem_addr_o<=mem_addr_i;
                 mem_ce_o <=`ChipEnable;
-                case (mem_addr_o[1:0])
+                case (mem_addr_i[1:0])
                     2'b00:begin
                         wdata_o <={{24{mem_data_i[7]}},mem_data_i[7:0]};//小端
                         datatype_sel_o<=4'b0001; 
@@ -90,7 +90,7 @@ always @(*) begin
             `EXE_OP_LD_BU:begin
                 mem_addr_o<=mem_addr_i;
                 mem_ce_o <=`ChipEnable;
-                case (mem_addr_o[1:0])
+                case (mem_addr_i[1:0])
                     2'b00:begin
                         wdata_o <={24'b0,mem_data_i[7:0]};//小端
                         datatype_sel_o<=4'b0001; 
@@ -117,7 +117,7 @@ always @(*) begin
             `EXE_OP_LD_H:begin
                 mem_addr_o<=mem_addr_i;
                 mem_ce_o <=`ChipEnable;
-                case (mem_addr_o[1:0])
+                case (mem_addr_i[1:0])
                     2'b00:begin
                         wdata_o <={{16{mem_data_i[15]}},mem_data_i[15:0]};//小端
                         datatype_sel_o<=4'b0011; 
@@ -137,7 +137,7 @@ always @(*) begin
             `EXE_OP_LD_HU:begin
                 mem_addr_o<=mem_addr_i;
                 mem_ce_o <=`ChipEnable;
-                case (mem_addr_o[1:0])
+                case (mem_addr_i[1:0])
                     2'b00:begin
                         wdata_o <={16'b0,mem_data_i[15:0]};//小端
                         datatype_sel_o<=4'b0011; 
@@ -166,7 +166,7 @@ always @(*) begin
                 mem_we_reg<=`WriteEnable;
                 mem_data_o<={reg1_i[7:0],reg1_i[7:0],reg1_i[7:0],reg1_i[7:0]};
                 case (mem_addr_i[1:0])
-                
+
                    2'b00:begin
 
                         datatype_sel_o<=4'b0001; 

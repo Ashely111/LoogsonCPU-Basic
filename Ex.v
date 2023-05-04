@@ -49,9 +49,10 @@ module Ex (
 
     input wire[`InstAddrBus] inst_i,
 
-    output wire[`AluOpBus] aluop_o,
-    output wire[`InstAddrBus] mem_addr_o,
-    output wire[`RegBus] reg1_o
+    output wire[`AluOpBus]       aluop_o,
+    output wire[`InstAddrBus]    mem_addr_o,
+    output wire[`RegBus]         reg1_o
+
 
  );
 reg[`RegBus] logicout ;
@@ -61,15 +62,15 @@ reg[`RegBus] arithmetic ;
 
 // wire sum_over; //溢出情况
  //wire reg1_equal_reg2;//reg1是否等于reg2
- wire reg2_smallto_reg1; //reg1是否小reg2
- 
- wire [`RegBus] sum_result ;//加法结果
- wire [`RegBus] mult_opdata1;//被乘数
- wire [`RegBus] mult_opdata2;//乘数
- wire [`RegBus] reg1_i_mux ;
- wire [`DoubleRegBus] mult_result_temp;//乘法临时结果64
- reg [`DoubleRegBus] mult_result_H;//乘法结果64高位
- reg [`DoubleRegBus] mult_result_L;//乘法结果64低位
+wire reg2_smallto_reg1; //reg1是否小reg2
+
+wire [`RegBus] sum_result ;//加法结果
+wire [`RegBus] mult_opdata1;//被乘数
+wire [`RegBus] mult_opdata2;//乘数
+wire [`RegBus] reg1_i_mux ;
+wire [`DoubleRegBus] mult_result_temp;//乘法临时结果64
+reg [`DoubleRegBus] mult_result_H;//乘法结果64高位
+reg [`DoubleRegBus] mult_result_L;//乘法结果64低位
 //
 
 reg stallreq_for_div;
@@ -79,13 +80,24 @@ reg stallreq_for_div;
 
 // //
 
+assign  aluop_o=aluop_i;//访存阶段确定加载储存的类型
+
+assign mem_addr_o =  reg2_i+{{20{inst_i[21]}},inst_i[21:10]};//访存地址
+
+assign reg1_o =reg1_i ;//储存数据
 
 
 
 
-
+//////////+++++++++++++++++++++++++++++++有问题！！
 assign reg1_i_mux=((aluop_i==`EXE_OP_SUB_W)||(aluop_i==`EXE_OP_SLT)) ? (~reg1_i+1):reg1_i;
 assign sum_result =reg2_i+reg1_i_mux;
+
+
+
+
+
+
 assign reg2_smallto_reg1 =((aluop_i==`EXE_OP_SLT)||(aluop_i==`EXE_OP_SLTI)) ? ((reg1_i[31]&&!reg2_i[31])||
                                                   (reg2_i[31]&&reg1_i[31]&&sum_result)||
                                                     (reg2_i[31]&&reg1_i[31]&&sum_result[31]))
@@ -101,12 +113,6 @@ assign mult_result_temp =mult_opdata1 *mult_opdata2;
 
 
 
-
-// assign aluop_o =aluop_i;//访存阶段确定加载储存的类型
-
-// assign mem_addr_o = reg2_i+{{20{inst_i[21]}},inst_i[21:10]};//访存地址
-
-// assign reg1_o =reg1_i ;//储存数据
 
 
 

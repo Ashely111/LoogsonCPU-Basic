@@ -12,8 +12,17 @@ module AHU_LA2023 (
     input wire clk,
     input wire rst,
     input wire [`InstBus] inst_i,
+   
+
+    input wire [`RegBus] Ram_Mem_data_i,
     output wire [`InstAddrBus] inst_addr_o, 
-    output wire rom_ce_o  
+    output wire rom_ce_o ,
+    output wire[`InstAddrBus] Mem_Ram_addr_o,
+    output wire Mem_Ram_mem_we_o,
+    output wire Mem_Ram_mem_ce_o,
+    output wire[`RegBus]Mem_Ram_data_o,
+    output wire[`DataTypeBus] Mem_Ram_datatype_sel_o
+
 );
 
 //between Pcreg and If2Id
@@ -112,25 +121,6 @@ wire[`RegBus] Ex_Ex2Mem_reg1;
 wire[`AluOpBus] Ex2Mem_Mem_aluop;
 wire[`InstAddrBus] Ex2Mem_Mem_mem_addr;
 wire[`RegBus] Ex2Mem_Mem_reg1 ;
-wire[`InstAddrBus] Mem_Ram_addr;
-wire[`RegBus] Mem_Ram_data;
-wire Mem_Ram_mem_we;
-wire[`DataTypeBus] Mem_Ram_datatype_sel;
-wire Mem_Ram_mem_ce;
-wire[`RegBus] Ram_Mem_data;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // instance PcReg
@@ -333,13 +323,13 @@ Mem Mem0(
     .aluop_i(Ex2Mem_Mem_aluop),
     .mem_addr_i(Ex2Mem_Mem_mem_addr),
     .reg1_i(Ex2Mem_Mem_reg1),
-    .mem_data_i(Ram_Mem_data),
+    .mem_data_i(Ram_Mem_data_i),
 
-    .mem_addr_o(Mem_Ram_addr),
-    .mem_we_o(Mem_Ram_mem_we),
-    .datatype_sel_o(Mem_Ram_datatype_sel),
-    .mem_ce_o(Mem_Ram_mem_ce),
-    .mem_data_o(Mem_Ram_data)
+    .mem_addr_o(Mem_Ram_addr_o),
+    .mem_we_o(Mem_Ram_mem_we_o),
+    .datatype_sel_o(Mem_Ram_datatype_sel_o),
+    .mem_ce_o(Mem_Ram_mem_ce_o),
+    .mem_data_o(Mem_Ram_data_o)
 );
 
 //instance Mem2Wb
@@ -391,27 +381,6 @@ CTRL CTRL0 (
 
 // );
 //
-
-
-
-
-//Ram
-
-Ram Ram0(
-
-    .clk(clk),
-
-    .data_i(Mem_Ram_data),
-    .we_i(Mem_Ram_mem_we),
-    .addr_i(Mem_Ram_addr),
-    .ce_i(Mem_Ram_mem_ce),
-    .datatype_sel_i(Mem_Ram_datatype_sel),
-
-    .data_o(Ram_Mem_data)
-
-
-);
-
 
 
 
